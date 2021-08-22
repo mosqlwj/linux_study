@@ -1,21 +1,18 @@
-//
-// Created by LWJ on 2021/8/17.
-//
 #include "apue.h"
-#include <dirent.h>
 
-int main(int argc, char* argv[]) {
+#define BUFFSIZE 4096
 
-    DIR *dp;
-    struct dirent *dirp;
-    if (argc != 2) {
-        err_quit("usage: is directory name");
+int main(void) {
+    int n;
+    char buf[BUFFSIZE];
+
+    while ((n = read(STDIN_FILENO, buf, BUFFSIZE)) > 0) {
+        if (write(STDOUT_FILENO, buf, n) != n) {
+            err_sys("write error");
+        }
     }
-    if ((dp = opendir(argv[1])) == NULL) {
-        err_sys("cannot open %s", argv[1]);
-    }
-    while ((dirp = readdir(dp)) != NULL) {
-        printf("%s\n", dirp->d_name);
+    if (n < 0) {
+        err_sys("read error");
     }
     exit(0);
 }
